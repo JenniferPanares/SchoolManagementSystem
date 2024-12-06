@@ -1,14 +1,26 @@
-﻿namespace SchoolManagementSystem.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace SchoolManagementSystem.Models
 {
     public class Student
     {
-        public int Id { get; set; } // Primary Key
-        public string FirstName { get; set; } = string.Empty;
-        public string LastName { get; set; } = string.Empty;
-        public string Email { get; set; } = string.Empty;
+        public int Id { get; set; }
 
-        public string PasswordHash { get; set; } = string.Empty; // Store hashed password
+        [Required]
+        [MaxLength(50)]
+        public string FirstName { get; set; }
+
+        [Required]
+        [MaxLength(50)]
+        public string LastName { get; set; }
+
+        [Required]
+        [EmailAddress]
+        public string Email { get; set; }
+
         public DateTime DateOfBirth { get; set; }
-        public string Address { get; set; } = string.Empty;
+
+        [MaxLength(100)]
+        public string Address { get; set; }
     }
 }

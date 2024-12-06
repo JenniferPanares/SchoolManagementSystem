@@ -58,7 +58,7 @@ namespace SchoolManagementSystem.Controllers
         // POST: Login
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Login(StudentLoginViewModel model)
+        public IActionResult Login(LoginViewModel model)
         {
             if (ModelState.IsValid)
             {

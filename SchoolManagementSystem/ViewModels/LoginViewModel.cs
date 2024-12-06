@@ -2,7 +2,7 @@
 
 namespace SchoolManagementSystem.ViewModels
 {
-    public class StudentLoginViewModel
+    public class LoginViewModel
     {
         [Required(ErrorMessage = "Email is required")]
         [EmailAddress(ErrorMessage = "Invalid email address")]

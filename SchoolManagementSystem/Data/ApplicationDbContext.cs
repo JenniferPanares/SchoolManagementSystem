@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using SchoolManagementSystem.Models;
+using System.ComponentModel.DataAnnotations;
 
 namespace SchoolManagementSystem.Data
 {
@@ -10,7 +11,12 @@ namespace SchoolManagementSystem.Data
             : base(options)
         {
         }
-
+ 
         public DbSet<Student> Students { get; set; }
+       
+        public DbSet<Admin> Admins { get; set; }
+     
+        public DbSet<Course> Courses { get; set; }
+       
+        public DbSet<Enrollment> Enrollments { get; set; }
     }
-}
