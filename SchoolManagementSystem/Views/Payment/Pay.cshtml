@@ -1,57 +1,61 @@
-﻿@model SchoolManagementSystem.ViewModels.PaymentViewModel
-
-@{
+﻿@{
     ViewData["Title"] = "Payment";
-    var stripePublishableKey = ViewBag.StripePublishableKey;
 }
 
-<h2>Pay Your School Fees</h2>
-<p>Enter the amount you want to pay and click "Pay Now".</p>
+<h1>Make a Payment</h1>
+<p>Enter the amount you'd like to pay and click "Pay Now".</p>
 
-<form id="payment-form" asp-action="CreateSession" method="post">
+<form id="payment-form">
     <div class="form-group">
-        <label asp-for="Amount"></label>
-        <input asp-for="Amount" class="form-control" />
-        <span asp-validation-for="Amount" class="text-danger"></span>
+        <label for="amount">Amount (USD):</label>
+        <input type="number" id="amount" class="form-control" placeholder="Enter amount" required />
     </div>
-    <button type="submit" id="checkout-button" class="btn btn-primary">Pay Now</button>
-    <a href="@Url.Action("Index", "Home")" class="btn btn-secondary">Cancel</a>
+    <button id="checkout-button" class="btn btn-primary" type="button">Pay Now</button>
 </form>
 
-<script src="https://js.stripe.com/v3/"></script>
 <script>
-    var stripe = Stripe('@stripePublishableKey');
+    document.addEventListener("DOMContentLoaded", async () => {
+        try {
+            // Fetch the Stripe Publishable Key from the backend
+            const response = await fetch("/api/config/get-stripe-publishable-key");
+            const data = await response.json();
 
-    document.getElementById('payment-form').addEventListener('submit', function (e) {
-        e.preventDefault();
+            if (data.publishableKey) {
+                const stripePublishableKey = data.publishableKey;
 
-        // Validate that the amount is provided
-        var amountInput = document.getElementById("Amount");
-        if (!amountInput.value || parseInt(amountInput.value) <= 0) {
-            alert("Please enter a valid payment amount greater than zero.");
-            return;
-        }
+                // Initialize Stripe.js
+                const stripe = Stripe(stripePublishableKey);
 
-        fetch('/Payment/CreateSession', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ amount: parseInt(amountInput.value) })
-        }).then(function (response) {
-            return response.json();
-        }).then(function (sessionId) {
-            return stripe.redirectToCheckout({ sessionId: sessionId.id });
-        }).then(function (result) {
-            if (result.error) {
-                alert(result.error.message);
+                // Attach an event listener to the checkout button
+                document.getElementById("checkout-button").addEventListener("click", async () => {
+                    const amount = document.getElementById("amount").value;
+
+                    if (!amount || amount <= 0) {
+                        alert("Please enter a valid amount.");
+                        return;
+                    }
+
+                    // Call the backend to create a payment session
+                    const sessionResponse = await fetch("/api/payment/create-session", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ amount: parseInt(amount, 10) })
+                    });
+
+                    const sessionData = await sessionResponse.json();
+
+                    if (sessionData.id) {
+                        // Redirect to Stripe Checkout
+                        stripe.redirectToCheckout({ sessionId: sessionData.id });
+                    } else {
+                        console.error("Failed to create Stripe session.");
+                    }
+                });
+            } else {
+                console.error("Stripe Publishable Key not found.");
             }
-        }).catch(function (error) {
-            console.error('Error:', error);
-        });
+        } catch (error) {
+            console.error("Error initializing Stripe:", error);
+        }
     });
 </script>
-
-@section Scripts {
-    <partial name="_ValidationScriptsPartial" />
-}

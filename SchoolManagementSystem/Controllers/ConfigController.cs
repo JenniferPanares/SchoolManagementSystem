@@ -35,4 +35,23 @@ public class ConfigController : ControllerBase
 
         return Ok(new { apiKey });
     }
+
+    [HttpGet("get-stripe-publishable-key")]
+    public IActionResult GetStripePublishableKey()
+    {
+        var publishableKey = _configuration["StripePublishableKey"];
+        if (string.IsNullOrEmpty(publishableKey))
+        {
+            return BadRequest("Stripe Publishable Key not found.");
+        }
+
+        return Ok(new { publishableKey });
+    }
+
+    // The secret key should only be used in backend and never exposed to the frontend.
+    [HttpGet("get-stripe-secret-key")]
+    public IActionResult GetStripeSecretKey()
+    {
+        return Unauthorized("Stripe Secret Key cannot be exposed in the frontend.");
+    }
 }
