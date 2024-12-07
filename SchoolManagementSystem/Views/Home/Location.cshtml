@@ -1,0 +1,31 @@
+﻿@{
+    ViewData["Title"] = "Location";
+    var googleMapsApiKey = ViewBag.GoogleMapsApiKey;
+    var openWeatherMapApiKey = ViewBag.OpenWeatherMapApiKey;
+}
+
+<h1>Our Location</h1>
+<p>We are located at Red Deer Polytechnic in Red Deer, Canada.</p>
+
+<!-- Google Maps -->
+<div id="map" style="height: 400px; width: 100%;"></div>
+
+<!-- Weather Information -->
+<div id="weather" style="margin-top: 20px;"></div>
+
+<script src="https://maps.googleapis.com/maps/api/js?key=@googleMapsApiKey&callback=initMap" async defer></script>
+<script src="~/js/site.js"></script>
+
+<script>
+    // This script tag is for the Google Maps and Weather initialization
+    document.addEventListener("DOMContentLoaded", () => {
+        // Initialize Google Maps if the map element is present
+        if (document.getElementById("map")) {
+            initMap();
+        }
+
+        // Replace YOUR_API_KEY with the key from configuration
+        const openWeatherMapApiKey = "@openWeatherMapApiKey";
+        fetchWeather(openWeatherMapApiKey);
+    });
+</script>

@@ -6,6 +6,7 @@ namespace SchoolManagementSystem.Controllers
 {
     public class HomeController : Controller
     {
+        private readonly IConfiguration _configuration;
         private readonly ILogger<HomeController> _logger;
 
         public HomeController(ILogger<HomeController> logger)
@@ -14,6 +15,23 @@ namespace SchoolManagementSystem.Controllers
         }
 
         public IActionResult Index()
+        {
+            return View();
+        }
+
+        public IActionResult About()
+        {
+            return View();
+        }
+
+        public IActionResult Location()
+        {
+            ViewBag.GoogleMapsApiKey = _configuration["APIKeys:GoogleMaps"];
+            ViewBag.OpenWeatherMapApiKey = _configuration["APIKeys:OpenWeatherMap"];
+            return View();
+        }
+
+        public IActionResult Placeholder()
         {
             return View();
         }

@@ -1,0 +1,57 @@
+﻿@model SchoolManagementSystem.ViewModels.PaymentViewModel
+
+@{
+    ViewData["Title"] = "Payment";
+    var stripePublishableKey = ViewBag.StripePublishableKey;
+}
+
+<h2>Pay Your School Fees</h2>
+<p>Enter the amount you want to pay and click "Pay Now".</p>
+
+<form id="payment-form" asp-action="CreateSession" method="post">
+    <div class="form-group">
+        <label asp-for="Amount"></label>
+        <input asp-for="Amount" class="form-control" />
+        <span asp-validation-for="Amount" class="text-danger"></span>
+    </div>
+    <button type="submit" id="checkout-button" class="btn btn-primary">Pay Now</button>
+    <a href="@Url.Action("Index", "Home")" class="btn btn-secondary">Cancel</a>
+</form>
+
+<script src="https://js.stripe.com/v3/"></script>
+<script>
+    var stripe = Stripe('@stripePublishableKey');
+
+    document.getElementById('payment-form').addEventListener('submit', function (e) {
+        e.preventDefault();
+
+        // Validate that the amount is provided
+        var amountInput = document.getElementById("Amount");
+        if (!amountInput.value || parseInt(amountInput.value) <= 0) {
+            alert("Please enter a valid payment amount greater than zero.");
+            return;
+        }
+
+        fetch('/Payment/CreateSession', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ amount: parseInt(amountInput.value) })
+        }).then(function (response) {
+            return response.json();
+        }).then(function (sessionId) {
+            return stripe.redirectToCheckout({ sessionId: sessionId.id });
+        }).then(function (result) {
+            if (result.error) {
+                alert(result.error.message);
+            }
+        }).catch(function (error) {
+            console.error('Error:', error);
+        });
+    });
+</script>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
