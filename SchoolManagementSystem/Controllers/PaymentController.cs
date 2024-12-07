@@ -11,7 +11,6 @@ namespace SchoolManagementSystem.Controllers
     {
         private readonly IConfiguration _configuration;
 
-        // Constructor that injects IConfiguration to get access to settings
         public PaymentController(IConfiguration configuration)
         {
             _configuration = configuration;
