@@ -1,33 +1,42 @@
 ﻿// Google Maps Initialization
 function initMap() {
-    const schoolLocation = { lat: 52.2682, lng: -113.8113 }; // Coordinates for Red Deer Polytechnic
+    const redDeerLocation = { lat: 52.2681, lng: -113.8112 }; // Red Deer Polytechnic coordinates
     const map = new google.maps.Map(document.getElementById("map"), {
         zoom: 15,
-        center: schoolLocation,
+        center: redDeerLocation,
     });
-    new google.maps.Marker({
-        position: schoolLocation,
+    const marker = new google.maps.Marker({
+        position: redDeerLocation,
         map: map,
+        title: "Red Deer Polytechnic",
     });
 }
+
 
 // Weather API Integration
-function fetchWeather(apiKey) {
-    fetch(`https://api.openweathermap.org/data/2.5/weather?q=Red+Deer,CA&appid=${apiKey}&units=metric`) // Replace _PUBLIC_KEY with your Stripe public API key
-        .then(response => response.json())
-        .then(data => {
-            document.getElementById("weather").innerHTML =
-                `Current temperature in Red Deer: ${data.main.temp}°C, ${data.weather[0].description}`;
-        })
-        .catch(error => console.error('Error fetching weather data:', error));
+async function fetchWeather(apiKey) {
+    const city = "Red Deer"; // Location to get weather for
+    const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric`;
+
+    try {
+        const response = await fetch(url);
+        if (!response.ok) {
+            throw new Error("Failed to fetch weather data.");
+        }
+        const weatherData = await response.json();
+
+        const weatherDiv = document.getElementById("weather");
+        weatherDiv.innerHTML = `
+            <h3>Current Weather</h3>
+            <p>Location: ${weatherData.name}</p>
+            <p>Temperature: ${weatherData.main.temp} °C</p>
+            <p>Weather: ${weatherData.weather[0].description}</p>
+        `;
+    } catch (error) {
+        console.error("Error fetching weather data:", error);
+    }
 }
 
-document.addEventListener("DOMContentLoaded", () => {
-    // Initialize Google Maps if the map element is present
-    if (document.getElementById("map")) {
-        initMap();
-    }
-});
 
 // Stripe Payment Integration
 function handleStripePayment(amount) {
