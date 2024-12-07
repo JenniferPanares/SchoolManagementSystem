@@ -18,6 +18,7 @@ namespace SchoolManagementSystem.Models
         [EmailAddress]
         public string Email { get; set; }
 
+        public string PasswordHash { get; set; } 
         public DateTime DateOfBirth { get; set; }
 
         [MaxLength(100)]

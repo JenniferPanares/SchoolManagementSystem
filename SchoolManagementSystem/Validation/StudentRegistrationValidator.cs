@@ -20,7 +20,7 @@ public class StudentRegistrationValidator : AbstractValidator<StudentRegistratio
             .NotEmpty().WithMessage("Email is required.")
             .EmailAddress().WithMessage("A valid email is required.")
             .MaximumLength(100).WithMessage("Email cannot exceed 100 characters.")
-            .Matches(@"^[^@\s]+@[^@\s]+\.[^@\s]+$").WithMessage("Email must be in a valid format.")
+            .Matches(@"^[^@\s]+@[^@\s]+\.[^@\s]+$").WithMessage("Email must be in a valid format.");
 
         // Password validation
         RuleFor(x => x.Password)
@@ -35,5 +35,11 @@ public class StudentRegistrationValidator : AbstractValidator<StudentRegistratio
         RuleFor(x => x.ConfirmPassword)
             .NotEmpty().WithMessage("Confirm password is required.")
             .Equal(x => x.Password).WithMessage("Passwords must match.");
+
+        // Date of Birth validation
+        RuleFor(x => x.DateOfBirth)
+            .NotEmpty().WithMessage("Date of Birth is required.")
+            .LessThan(DateTime.Now).WithMessage("Date of Birth cannot be in the future.")
+            .GreaterThan(DateTime.Now.AddYears(-100)).WithMessage("Date of Birth must be within a realistic range.");
     }
 }

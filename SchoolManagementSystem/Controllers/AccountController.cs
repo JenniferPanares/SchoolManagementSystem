@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using SchoolManagementSystem.ViewModels;
 
 namespace SchoolManagementSystem.Controllers
 {
@@ -28,41 +29,43 @@ namespace SchoolManagementSystem.Controllers
         // POST: Register
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Register(string email, string password, string role)
+        public async Task<IActionResult> Register(StudentRegistrationViewModel model)
         {
-            if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(password) || string.IsNullOrEmpty(role))
+            // Validate the model
+            if (!ModelState.IsValid)
             {
-                ModelState.AddModelError("", "All fields are required.");
-                return View();
+                return View(model); // Return view with validation errors
             }
 
             // Check if the role exists
-            if (!await _roleManager.RoleExistsAsync(role))
+            if (!await _roleManager.RoleExistsAsync(model.Role))
             {
                 ModelState.AddModelError("", "Invalid role selected.");
-                return View();
+                return View(model);
             }
 
             // Create user
-            var user = new IdentityUser { UserName = email, Email = email };
-            var result = await _userManager.CreateAsync(user, password);
+            var user = new IdentityUser { UserName = model.Email, Email = model.Email };
+            var result = await _userManager.CreateAsync(user, model.Password);
 
             if (result.Succeeded)
             {
                 // Assign role
-                await _userManager.AddToRoleAsync(user, role);
+                await _userManager.AddToRoleAsync(user, model.Role);
 
                 // Redirect to login after successful registration
                 return RedirectToAction("Login");
             }
 
+            // Handle errors from UserManager
             foreach (var error in result.Errors)
             {
                 ModelState.AddModelError("", error.Description);
             }
 
-            return View();
+            return View(model);
         }
+
 
         // GET: Login
         public IActionResult Login()
@@ -113,5 +116,15 @@ namespace SchoolManagementSystem.Controllers
             await _signInManager.SignOutAsync();
             return RedirectToAction("Login");
         }
+
+        // Hide Password
+        private string HashPassword(string password)
+        {
+            using var sha256 = System.Security.Cryptography.SHA256.Create();
+            var bytes = System.Text.Encoding.UTF8.GetBytes(password);
+            var hash = sha256.ComputeHash(bytes);
+            return Convert.ToBase64String(hash);
+        }
+
     }
 }
