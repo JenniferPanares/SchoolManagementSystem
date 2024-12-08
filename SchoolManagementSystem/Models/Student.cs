@@ -6,26 +6,14 @@ namespace SchoolManagementSystem.Models
     public class Student
     {
         public int Id { get; set; }
-
-        [Required]
-        [MaxLength(50)]
         public string FirstName { get; set; }
-
-        [Required]
-        [MaxLength(50)]
         public string LastName { get; set; }
-
-        [Required]
-        [EmailAddress]
         public string Email { get; set; }
-
-        public string PasswordHash { get; set; }
-        public DateTime DateOfBirth { get; set; }
-
-        [MaxLength(100)]
         public string Address { get; set; }
+        public DateTime DateOfBirth { get; set; }
+        public string PasswordHash { get; set; }
 
-        // Add a collection of courses
-        public List<string> Courses { get; set; } = new List<string>();
+        public ICollection<Course> Courses { get; set; } = new List<Course>();
     }
+
 }

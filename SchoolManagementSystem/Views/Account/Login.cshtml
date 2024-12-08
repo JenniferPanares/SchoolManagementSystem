@@ -27,6 +27,11 @@
     <button type="submit" class="btn btn-primary">Login</button>
 </form>
 
+<div class="mt-3">
+    <p>Don't have an account? <a asp-controller="Account" asp-action="Register" class="btn btn-link">Register here</a></p>
+</div>
+
+
 <script>
     const togglePassword = document.querySelector("#togglePassword");
     const password = document.querySelector("#password");

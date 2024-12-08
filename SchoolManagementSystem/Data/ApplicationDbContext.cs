@@ -33,8 +33,7 @@ public class ApplicationDbContext : IdentityDbContext<IdentityUser>
                 Email = "john.doe@example.com",
                 Address = "123 Main Street",
                 DateOfBirth = new DateTime(2000, 1, 1),
-                PasswordHash = passwordHasher.HashPassword(null, password), // Hash the password
-                Courses = new List<string> { "Math 101", "Science 101" }
+                PasswordHash = passwordHasher.HashPassword(null, password)
             },
             new Student
             {
@@ -44,9 +43,17 @@ public class ApplicationDbContext : IdentityDbContext<IdentityUser>
                 Email = "jane.smith@example.com",
                 Address = "456 Elm Street",
                 DateOfBirth = new DateTime(1998, 5, 15),
-                PasswordHash = passwordHasher.HashPassword(null, password), // Hash the password
-                Courses = new List<string> { "English 101", "History 101" }
+                PasswordHash = passwordHasher.HashPassword(null, password)
             }
         );
+
+        // Seed data for the Courses table
+        modelBuilder.Entity<Course>().HasData(
+            new Course { Id = 1, Name = "Math 101", StudentId = 1 },
+            new Course { Id = 2, Name = "Science 101", StudentId = 1 },
+            new Course { Id = 3, Name = "English 101", StudentId = 2 },
+            new Course { Id = 4, Name = "History 101", StudentId = 2 }
+        );
     }
+
 }
