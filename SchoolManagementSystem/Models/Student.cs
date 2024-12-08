@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace SchoolManagementSystem.Models
 {
@@ -18,10 +19,13 @@ namespace SchoolManagementSystem.Models
         [EmailAddress]
         public string Email { get; set; }
 
-        public string PasswordHash { get; set; } 
+        public string PasswordHash { get; set; }
         public DateTime DateOfBirth { get; set; }
 
         [MaxLength(100)]
         public string Address { get; set; }
+
+        // Add a collection of courses
+        public List<string> Courses { get; set; } = new List<string>();
     }
 }

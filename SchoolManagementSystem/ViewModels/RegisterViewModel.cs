@@ -2,7 +2,7 @@
 
 namespace SchoolManagementSystem.ViewModels
 {
-    public class StudentRegistrationViewModel
+    public class RegisterViewModel
     {
         [Required(ErrorMessage = "First name is required.")]
         [MaxLength(50, ErrorMessage = "First name cannot exceed 50 characters.")]

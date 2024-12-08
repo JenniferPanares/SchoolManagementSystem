@@ -1,0 +1,33 @@
+﻿@model SchoolManagementSystem.Models.Student
+
+<h1>Welcome, @Model.FirstName @Model.LastName!</h1>
+
+<h2>Profile Details</h2>
+<p><strong>Email:</strong> @Model.Email</p>
+<p><strong>Date of Birth:</strong> @Model.DateOfBirth.ToShortDateString()</p>
+<p><strong>Address:</strong> @Model.Address</p>
+
+<a asp-action="Edit" class="btn btn-primary">Edit Profile</a>
+
+<h2>Enrolled Courses</h2>
+@if (Model.Courses != null && Model.Courses.Any())
+{
+    <ul>
+        @foreach (var course in Model.Courses)
+        {
+            <li>@course</li>
+        }
+    </ul>
+}
+else
+{
+    <p>No courses enrolled yet.</p>
+}
+
+<form asp-action="AddCourse" method="post">
+    <div class="form-group">
+        <label for="courseName">Add New Course:</label>
+        <input type="text" id="courseName" name="courseName" class="form-control" />
+    </div>
+    <button type="submit" class="btn btn-success">Add Course</button>
+</form>

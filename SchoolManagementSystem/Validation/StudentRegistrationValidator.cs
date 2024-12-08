@@ -1,7 +1,7 @@
 ﻿using FluentValidation;
 using SchoolManagementSystem.ViewModels;
 
-public class StudentRegistrationValidator : AbstractValidator<StudentRegistrationViewModel>
+public class StudentRegistrationValidator : AbstractValidator<RegisterViewModel>
 {
     public StudentRegistrationValidator()
     {

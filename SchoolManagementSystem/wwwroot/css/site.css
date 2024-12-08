@@ -4,16 +4,24 @@ html {
 
 
 body {
-    background-image: url('/images/mainBackground.jpg');
-    background-size: cover; 
-    background-repeat: no-repeat; 
-    background-attachment: fixed; 
-    background-position: center; 
+    background-color: #E1CEB4;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-position: center;
+    margin-bottom: 60px;
+}
+
+
+.navbar-nav {
+    background-color: #402925;
+    color: white;
+    
 }
 
 
 @media (min-width: 768px) {
-  html {
+    html {
     font-size: 16px;
   }
 }
@@ -27,6 +35,24 @@ html {
   min-height: 100%;
 }
 
-body {
-  margin-bottom: 60px;
+h1.welcome {
+    text-align: center;
+    font-size: 300%;    
+    animation: mymove 2s infinite;
+}
+
+h2.title {
+    text-align: center;
+    font-size: 200%;    
+    animation: mymove 2s infinite;
+}
+
+@keyframes mymove {
+    from {
+        left: 0px;
+    }
+
+    to {
+        left: 200px;
+    }
 }

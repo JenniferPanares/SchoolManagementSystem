@@ -1,23 +1,52 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using SchoolManagementSystem.Models;
-using System.ComponentModel.DataAnnotations;
 
-namespace SchoolManagementSystem.Data
+public class ApplicationDbContext : IdentityDbContext<IdentityUser>
 {
-    public class ApplicationDbContext : IdentityDbContext
+    public DbSet<Student> Students { get; set; }
+    public DbSet<Course> Courses { get; set; }
+
+    public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
+        : base(options)
     {
-        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
-            : base(options)
-        {
-        }
+    }
 
-        public DbSet<Student> Students { get; set; }
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        base.OnModelCreating(modelBuilder);
 
-        public DbSet<Admin> Admins { get; set; }
+        // Create a password hasher
+        var passwordHasher = new PasswordHasher<IdentityUser>();
 
-        public DbSet<Course> Courses { get; set; }
+        // Sample password to hash
+        string password = "Test@123";
 
-        public DbSet<Enrollment> Enrollments { get; set; }
+        // Seed data for the Student table
+        modelBuilder.Entity<Student>().HasData(
+            new Student
+            {
+                Id = 1,
+                FirstName = "John",
+                LastName = "Doe",
+                Email = "john.doe@example.com",
+                Address = "123 Main Street",
+                DateOfBirth = new DateTime(2000, 1, 1),
+                PasswordHash = passwordHasher.HashPassword(null, password), // Hash the password
+                Courses = new List<string> { "Math 101", "Science 101" }
+            },
+            new Student
+            {
+                Id = 2,
+                FirstName = "Jane",
+                LastName = "Smith",
+                Email = "jane.smith@example.com",
+                Address = "456 Elm Street",
+                DateOfBirth = new DateTime(1998, 5, 15),
+                PasswordHash = passwordHasher.HashPassword(null, password), // Hash the password
+                Courses = new List<string> { "English 101", "History 101" }
+            }
+        );
     }
 }

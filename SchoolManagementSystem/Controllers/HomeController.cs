@@ -31,7 +31,7 @@ namespace SchoolManagementSystem.Controllers
             return View();
         }
 
-        public IActionResult Placeholder()
+        public IActionResult Programs()
         {
             return View();
         }

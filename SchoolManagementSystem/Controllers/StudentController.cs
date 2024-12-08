@@ -26,7 +26,7 @@ namespace SchoolManagementSystem.Controllers
         // POST: Register
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Register(StudentRegistrationViewModel model)
+        public IActionResult Register(RegisterViewModel model)
         {
             if (ModelState.IsValid)
             {
@@ -66,8 +66,8 @@ namespace SchoolManagementSystem.Controllers
 
                 if (student != null && VerifyPassword(model.Password, student.PasswordHash))
                 {
-                    // Redirect to a dashboard or home page after successful login
-                    return RedirectToAction("Index", "Home");
+                    // Redirect to Student Dashboard after login
+                    return RedirectToAction("Dashboard", "Student", new { id = student.Id });
                 }
 
                 ModelState.AddModelError("", "Invalid email or password");
@@ -75,6 +75,7 @@ namespace SchoolManagementSystem.Controllers
 
             return View(model);
         }
+
 
         private string HashPassword(string password)
         {
@@ -87,5 +88,20 @@ namespace SchoolManagementSystem.Controllers
         {
             return HashPassword(password) == storedHash;
         }
+
+        public IActionResult Dashboard(int id)
+        {
+            var student = _context.Students.SingleOrDefault(s => s.Id == id);
+
+            if (student == null)
+            {
+                return NotFound("Student not found.");
+            }
+
+            return View(student);
+        }
+
+
+
     }
 }
