@@ -2,7 +2,7 @@
 {
     public class StudentDashboard
     {
-        public int Id { get; set; } // Unique identifier for the student
+        public int Id { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string Email { get; set; }
