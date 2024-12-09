@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using SchoolManagementSystem.Data;
 using SchoolManagementSystem.Models;
+using System.Linq;
 
 public class StudentDashboardController : Controller
 {
@@ -15,7 +17,9 @@ public class StudentDashboardController : Controller
     public IActionResult Index()
     {
         var email = User.Identity.Name;
-        var student = _context.Students.FirstOrDefault(s => s.Email == email);
+        var student = _context.Students
+            .Include(s => s.Courses) // Ensure Courses are included
+            .FirstOrDefault(s => s.Email == email);
 
         if (student == null)
         {
@@ -27,21 +31,22 @@ public class StudentDashboardController : Controller
 
     // POST: AddCourse
     [HttpPost]
-    public IActionResult AddCourse(string courseName)
+    public IActionResult AddCourse(int courseId)
     {
         var email = User.Identity.Name;
-        var student = _context.Students.FirstOrDefault(s => s.Email == email);
+        var student = _context.Students
+            .Include(s => s.Courses) // Ensure Courses are included
+            .FirstOrDefault(s => s.Email == email);
 
-        if (student != null && !string.IsNullOrEmpty(courseName))
+        if (student != null)
         {
-            // Ensure the student has a Courses list
-            if (student.Courses == null)
-            {
-                student.Courses = new List<string>();
-            }
+            var course = _context.Courses.FirstOrDefault(c => c.CourseId == courseId);
 
-            student.Courses.Add(courseName);
-            _context.SaveChanges();
+            if (course != null && !student.Courses.Contains(course))
+            {
+                student.Courses.Add(course); // Add the course to the student
+                _context.SaveChanges();
+            }
         }
 
         return RedirectToAction("Index");

@@ -9,9 +9,11 @@ namespace SchoolManagementSystem.Controllers
         private readonly IConfiguration _configuration;
         private readonly ILogger<HomeController> _logger;
 
-        public HomeController(ILogger<HomeController> logger)
+        // Constructor
+        public HomeController(ILogger<HomeController> logger, IConfiguration configuration)
         {
             _logger = logger;
+            _configuration = configuration;
         }
 
         public IActionResult Index()
@@ -24,12 +26,13 @@ namespace SchoolManagementSystem.Controllers
             return View();
         }
 
-        public IActionResult Location()
+        public IActionResult AerialView()
         {
-            ViewBag.GoogleMapsApiKey = _configuration["APIKeys:GoogleMaps"];
-            ViewBag.OpenWeatherMapApiKey = _configuration["APIKeys:OpenWeatherMap"];
-            return View();
+            var apiKey = _configuration["APIKeys:GoogleMaps"]; // Get the API key from appsettings.json
+            ViewData["GoogleMapsApiKey"] = apiKey; // Pass it to the view
+            return View("~/Views/Map/AerialView.cshtml"); // Explicitly specify the view path
         }
+
 
         public IActionResult Programs()
         {

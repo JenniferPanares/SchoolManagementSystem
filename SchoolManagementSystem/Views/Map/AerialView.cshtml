@@ -1,0 +1,103 @@
+﻿@{
+    ViewData["Title"] = "Location";
+    var googleMapsApiKey = ViewData["GoogleMapsApiKey"]; // Pass the API key from the controller
+    Layout = "~/Views/Shared/_Layout.cshtml"; // Explicitly inherit the shared layout
+}
+
+<div class="container">
+    <div class="row">
+        <!-- Left Column: Text Content -->
+        <div class="col-md-6">
+            <h2>Our Locations</h2>
+            <p>
+                Red Deer Polytechnic (RDP) is centrally located in the heart of Alberta, Canada.
+            </p>
+            <p>
+                We provide diverse education, training, and applied research opportunities, serving learners, industry,
+                and communities across Alberta and from around the world.
+            </p>
+            <h4>Come visit us:</h4>
+            <ul>
+                <li>Main campus (which includes our main building, Gary W. Harris Canada Games Centre, Four Centres, and Residences)</li>
+                <li>Downtown campus</li>
+                <li>Campus Alberta Central learning centres in communities across the region</li>
+            </ul>
+            <h4>Land Acknowledgement</h4>
+            <p>
+                Red Deer Polytechnic recognizes that our campus is situated on Treaty 7 land, the traditional territory of the Blackfoot, Tsuut’ina, and Stoney Nakoda peoples, and that the central Alberta region we serve falls under Treaty 6, traditional Métis, Cree, and Saulteaux territory.
+            </p>
+            <p>
+                We honour the First Peoples who have lived here since time immemorial, and we give thanks for the land where RDP sits. This is where we will strive to honour and transform our relationships with one another.
+            </p>
+            <h4>Main Campus</h4>
+        </div>
+
+        <!-- Right Column: Video Content -->
+        <div class="col-md-6 text-center">
+            <div class="aerial-view-container">
+                <video class="aerial-view-media" muted autoplay loop>
+                    Your browser does not support HTML5 video.
+                </video>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        /**
+         * Configuration
+         */
+        const API_KEY = '@googleMapsApiKey'; // API key dynamically injected from the backend
+        const ADDRESS = '600 Montgomery St, San Francisco, CA 94111'; // Replace with the desired address
+        const API_URL = 'https://aerialview.googleapis.com/v1/videos:lookupVideo';
+
+        async function initAerialView() {
+            const displayEl = document.querySelector('video');
+
+            // Video playback toggle
+            displayEl.addEventListener('click', () => {
+                if (displayEl.paused) {
+                    displayEl.play();
+                } else {
+                    displayEl.pause();
+                }
+            });
+
+            // Fetch video for the specified address
+            try {
+                const url = `${API_URL}?key=${API_KEY}&address=${encodeURIComponent(ADDRESS)}`;
+                const response = await fetch(url);
+                const data = await response.json();
+
+                if (response.ok) {
+                    // Video exists and is active
+                    if (data.state === 'ACTIVE' && data.uris?.MP4_HIGH?.landscapeUri) {
+                        console.log('Video found:', data);
+                        displayEl.src = data.uris.MP4_HIGH.landscapeUri;
+                    } else if (data.state === 'PROCESSING') {
+                        alert('The video is still processing. Please try again later.');
+                        console.log('Video processing:', data);
+                    } else {
+                        alert('Video format not available.');
+                        console.log('Video response:', data);
+                    }
+                } else if (response.status === 404) {
+                    // Video not found
+                    alert(data.error?.message || 'Video not found for the specified address.');
+                    console.log('Error response:', data);
+                } else {
+                    // Other API error
+                    alert(`API Error: ${data.error?.message || 'Unknown error.'}`);
+                    console.error('Error fetching video:', data);
+                }
+            } catch (error) {
+                console.error('Network or API error:', error);
+                alert('An error occurred while fetching the video. Please check the console for details.');
+            }
+        }
+
+        // Initialize the video
+        initAerialView();
+    </script>
+}

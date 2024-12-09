@@ -49,11 +49,10 @@ public class ApplicationDbContext : IdentityDbContext<IdentityUser>
 
         // Seed data for the Courses table
         modelBuilder.Entity<Course>().HasData(
-            new Course { Id = 1, Name = "Math 101", StudentId = 1 },
-            new Course { Id = 2, Name = "Science 101", StudentId = 1 },
-            new Course { Id = 3, Name = "English 101", StudentId = 2 },
-            new Course { Id = 4, Name = "History 101", StudentId = 2 }
+            new Course { CourseId = 1, CourseTitle = "Math 101", Description = "Basic Mathematics", Credits = 3 },
+            new Course { CourseId = 2, CourseTitle = "Science 101", Description = "Introduction to Science", Credits = 4 },
+            new Course { CourseId = 3, CourseTitle = "English 101", Description = "English Literature Basics", Credits = 3 },
+            new Course { CourseId = 4, CourseTitle = "History 101", Description = "World History Overview", Credits = 2 }
         );
     }
-
 }
