@@ -4,14 +4,19 @@ namespace SchoolManagementSystem.Models
 {
     public class Course
     {
-        public int CourseId { get; set; }
-        public string CourseTitle { get; set; }
-        public string Description { get; set; }
-        public int Credits { get; set; }
+        public int CourseId { get; set; } 
 
-        public int Id { get; set; }
-        public string Name { get; set; }
+        [Required]
+        [StringLength(100)]
+        public string CourseTitle { get; set; } 
+
+        [StringLength(500)]
+        public string Description { get; set; } 
+
+        [Range(1, 10)]
+        public int Credits { get; set; } 
+
         public int StudentId { get; set; }
-        public Student Student { get; set; }
+        public Student Student { get; set; } 
     }
 }
