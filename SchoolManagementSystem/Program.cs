@@ -25,6 +25,7 @@ builder.Services.AddDefaultIdentity<IdentityUser>(options =>
     options.SignIn.RequireConfirmedAccount = false; // For development
 }).AddEntityFrameworkStores<ApplicationDbContext>();
 
+// Register FluentValidation
 builder.Services.AddFluentValidationAutoValidation()
                 .AddFluentValidationClientsideAdapters();
 

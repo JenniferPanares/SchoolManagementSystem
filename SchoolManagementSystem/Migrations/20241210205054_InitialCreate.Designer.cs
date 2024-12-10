@@ -5,21 +5,22 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using SchoolManagementSystem.Data;
 
 #nullable disable
 
-namespace SchoolManagementSystem.Data.Migrations
+namespace SchoolManagementSystem.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20241208193016_UpdateStudentSeed")]
-    partial class UpdateStudentSeed
+    [Migration("20241210205054_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.11")
+                .HasAnnotation("ProductVersion", "9.0.0")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -169,12 +170,10 @@ namespace SchoolManagementSystem.Data.Migrations
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
                     b.Property<string>("LoginProvider")
-                        .HasMaxLength(128)
-                        .HasColumnType("nvarchar(128)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("ProviderKey")
-                        .HasMaxLength(128)
-                        .HasColumnType("nvarchar(128)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("ProviderDisplayName")
                         .HasColumnType("nvarchar(max)");
@@ -211,12 +210,10 @@ namespace SchoolManagementSystem.Data.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("LoginProvider")
-                        .HasMaxLength(128)
-                        .HasColumnType("nvarchar(128)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Name")
-                        .HasMaxLength(128)
-                        .HasColumnType("nvarchar(128)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Value")
                         .HasColumnType("nvarchar(max)");
@@ -224,6 +221,35 @@ namespace SchoolManagementSystem.Data.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens", (string)null);
+                });
+
+            modelBuilder.Entity("SchoolManagementSystem.Models.Admin", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Department")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PhoneNumber")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Admin");
                 });
 
             modelBuilder.Entity("SchoolManagementSystem.Models.Course", b =>
@@ -234,29 +260,75 @@ namespace SchoolManagementSystem.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CourseId"));
 
+                    b.Property<int?>("AdminId")
+                        .HasColumnType("int");
+
                     b.Property<string>("CourseTitle")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<int>("Credits")
                         .HasColumnType("int");
 
                     b.Property<string>("Description")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<int>("StudentId")
+                        .HasColumnType("int");
 
                     b.HasKey("CourseId");
 
+                    b.HasIndex("AdminId");
+
+                    b.HasIndex("StudentId");
+
                     b.ToTable("Courses");
+
+                    b.HasData(
+                        new
+                        {
+                            CourseId = 1,
+                            CourseTitle = "Math 101",
+                            Credits = 3,
+                            Description = "Basic Mathematics",
+                            StudentId = 0
+                        },
+                        new
+                        {
+                            CourseId = 2,
+                            CourseTitle = "Science 101",
+                            Credits = 4,
+                            Description = "Introduction to Science",
+                            StudentId = 0
+                        },
+                        new
+                        {
+                            CourseId = 3,
+                            CourseTitle = "English 101",
+                            Credits = 3,
+                            Description = "English Literature Basics",
+                            StudentId = 0
+                        },
+                        new
+                        {
+                            CourseId = 4,
+                            CourseTitle = "History 101",
+                            Credits = 2,
+                            Description = "World History Overview",
+                            StudentId = 0
+                        });
                 });
 
             modelBuilder.Entity("SchoolManagementSystem.Models.Enrollment", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("EnrollmentId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("EnrollmentId"));
 
                     b.Property<int>("CourseId")
                         .HasColumnType("int");
@@ -267,29 +339,24 @@ namespace SchoolManagementSystem.Data.Migrations
                     b.Property<int>("StudentId")
                         .HasColumnType("int");
 
-                    b.HasKey("Id");
+                    b.HasKey("EnrollmentId");
 
                     b.HasIndex("CourseId");
 
                     b.HasIndex("StudentId");
 
-                    b.ToTable("Enrollment");
+                    b.ToTable("Enrollments");
                 });
 
             modelBuilder.Entity("SchoolManagementSystem.Models.Student", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("StudentId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("StudentId"));
 
                     b.Property<string>("Address")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<string>("Courses")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -302,44 +369,40 @@ namespace SchoolManagementSystem.Data.Migrations
 
                     b.Property<string>("FirstName")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("LastName")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PasswordHash")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("Id");
+                    b.HasKey("StudentId");
 
                     b.ToTable("Students");
 
                     b.HasData(
                         new
                         {
-                            Id = 1,
+                            StudentId = 1,
                             Address = "123 Main Street",
-                            Courses = "[\"Math 101\",\"Science 101\"]",
                             DateOfBirth = new DateTime(2000, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "john.doe@example.com",
                             FirstName = "John",
                             LastName = "Doe",
-                            PasswordHash = "AQAAAAIAAYagAAAAEE8YLwyIebdl8a3dJcO0CrLFMiejEeEqx7SgmXfSr2F5dqWCBs3FfsmPNCqyo1CC4Q=="
+                            PasswordHash = "AQAAAAIAAYagAAAAEPJIaKsle6b8QE8mfGhMgrAC6pyNZst6wQUa2yKGR+lXpjnLpjIwbLp7gxtS7nCUJg=="
                         },
                         new
                         {
-                            Id = 2,
+                            StudentId = 2,
                             Address = "456 Elm Street",
-                            Courses = "[\"English 101\",\"History 101\"]",
                             DateOfBirth = new DateTime(1998, 5, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "jane.smith@example.com",
                             FirstName = "Jane",
                             LastName = "Smith",
-                            PasswordHash = "AQAAAAIAAYagAAAAEOu0wV1WaHW0heb0FWUdjPa73k/0ZWzXZ6vQrNKzuHQZcwVWVgAJo0PZkLkqP4G19g=="
+                            PasswordHash = "AQAAAAIAAYagAAAAEOsKzDIu5R66G83c/tk8ckHxfAUM2biZm4GI6co15tiQR88tVGlt3nEogaTResZwOw=="
                         });
                 });
 
@@ -394,18 +457,35 @@ namespace SchoolManagementSystem.Data.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("SchoolManagementSystem.Models.Course", b =>
+                {
+                    b.HasOne("SchoolManagementSystem.Models.Admin", "Admin")
+                        .WithMany()
+                        .HasForeignKey("AdminId");
+
+                    b.HasOne("SchoolManagementSystem.Models.Student", "Student")
+                        .WithMany("Courses")
+                        .HasForeignKey("StudentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Admin");
+
+                    b.Navigation("Student");
+                });
+
             modelBuilder.Entity("SchoolManagementSystem.Models.Enrollment", b =>
                 {
                     b.HasOne("SchoolManagementSystem.Models.Course", "Course")
                         .WithMany("Enrollments")
                         .HasForeignKey("CourseId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.SetNull)
                         .IsRequired();
 
                     b.HasOne("SchoolManagementSystem.Models.Student", "Student")
-                        .WithMany()
+                        .WithMany("Enrollments")
                         .HasForeignKey("StudentId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.SetNull)
                         .IsRequired();
 
                     b.Navigation("Course");
@@ -415,6 +495,13 @@ namespace SchoolManagementSystem.Data.Migrations
 
             modelBuilder.Entity("SchoolManagementSystem.Models.Course", b =>
                 {
+                    b.Navigation("Enrollments");
+                });
+
+            modelBuilder.Entity("SchoolManagementSystem.Models.Student", b =>
+                {
+                    b.Navigation("Courses");
+
                     b.Navigation("Enrollments");
                 });
 #pragma warning restore 612, 618

@@ -88,7 +88,7 @@ public class StudentDashboardController : Controller
     {
         if (ModelState.IsValid)
         {
-            var student = _context.Students.FirstOrDefault(s => s.Id == model.Id);
+            var student = _context.Students.FirstOrDefault(s => s.StudentId == model.StudentId);
             if (student != null)
             {
                 student.FirstName = model.FirstName;
