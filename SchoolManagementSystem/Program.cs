@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using SchoolManagementSystem.Data;
 using FluentValidation.AspNetCore;
 using SchoolManagementSystem.Services;
+using FluentValidation;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -24,9 +25,11 @@ builder.Services.AddDefaultIdentity<IdentityUser>(options =>
     options.SignIn.RequireConfirmedAccount = false; // For development
 }).AddEntityFrameworkStores<ApplicationDbContext>();
 
-// Register FluentValidation
-builder.Services.AddControllersWithViews()
-    .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<StudentRegistrationValidator>());
+builder.Services.AddFluentValidationAutoValidation()
+                .AddFluentValidationClientsideAdapters();
+
+builder.Services.AddValidatorsFromAssemblyContaining<StudentValidator>();
+
 
 // Google Maps API Key Configuration
 var googleApiKey = builder.Configuration["APIKeys:GoogleMaps"];
@@ -65,5 +68,9 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 app.MapRazorPages();
+
+
+
+
 
 app.Run();

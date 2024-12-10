@@ -1,0 +1,32 @@
+﻿@{
+    ViewData["Title"] = "Tuition Payment";
+}
+
+<h2>Tuition Payment</h2>
+
+<form id="studentForm" onsubmit="redirectToBillingPage(); return false;">
+    <div>
+        <label for="studentId">Enter your Student ID:</label>
+        <input type="text" id="studentId" placeholder="e.g., 12345" required />
+    </div>
+    <div>
+        <label for="lastName">Enter your Last Name:</label>
+        <input type="text" id="lastName" placeholder="e.g., Doe" required />
+    </div>
+    <button type="submit">Proceed</button>
+</form>
+
+<script>
+    function redirectToBillingPage() {
+        const studentId = document.getElementById('studentId').value.trim();
+        const lastName = document.getElementById('lastName').value.trim();
+
+        if (studentId && lastName) {
+            // Pass the data via query parameters
+            const url = `/AccountSummary/TuitionBilling?studentId=${encodeURIComponent(studentId)}&lastName=${encodeURIComponent(lastName)}`;
+            window.location.href = url;
+        } else {
+            alert('Please fill in both fields before proceeding.');
+        }
+    }
+</script>

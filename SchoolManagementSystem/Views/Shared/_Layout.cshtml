@@ -8,13 +8,15 @@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/SchoolManagementSystem.styles.css" asp-append-version="true" />
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
-
 </head>
 <body>
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm border-bottom box-shadow mb-3">
             <div class="container-fluid">
-                <img src="images/Logo.png" width="100" height="100"/>
+                <!-- Updated logo path -->
+                <a class="navbar-brand" href="@Url.Action("Index", "Home")">
+                    <img src="@Url.Content("~/images/Logo.png")" width="100" height="100" alt="Logo" />
+                </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
@@ -23,19 +25,20 @@
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
                             <a class="nav-link text-white" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>                     
+                        </li>
                         <li class="nav-item">
                             <a class="nav-link text-white" asp-area="" asp-controller="Home" asp-action="About">About</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link text-white" asp-area="" asp-controller="Home" asp-action="Programs">Programs</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-white" asp-area="" asp-action="AerialView">Aerial View</a>
+                        <li>
+                        <a class="nav-link text-white" asp-area="" asp-action="AerialView">Campus Location</a>
                         </li>
 
-                       
-
+                        <li class="nav-item">
+                            <a class="nav-link text-white" asp-controller="Home" asp-action="TuitionPayment">Tuition Payment</a>
+                        </li>
                     </ul>
                     <partial name="_LoginPartial" />
                 </div>

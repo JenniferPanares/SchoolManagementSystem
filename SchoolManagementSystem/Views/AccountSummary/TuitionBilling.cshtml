@@ -1,0 +1,101 @@
+﻿@{
+    ViewData["Title"] = "Tuition Billing";
+    var studentId = Context.Request.Query["studentId"];
+    var lastName = Context.Request.Query["lastName"];
+}
+
+<h2>Tuition Billing</h2>
+
+<p><strong>Student ID:</strong> @studentId</p>
+<p><strong>Last Name:</strong> @lastName</p>
+
+<table>
+    <thead>
+        <tr>
+            <th>Description</th>
+            <th>Charge</th>
+            <th>Payment</th>
+            <th>Balance</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>Basic Tuition Assessment</td>
+            <td>CA$30,074.00</td>
+            <td>CA$20,000.00</td>
+            <td>CA$10,074.00</td>
+        </tr>
+        <tr>
+            <td>Activity and Wellness Fee</td>
+            <td>CA$88.00</td>
+            <td>CA$88.00</td>
+            <td>CA$0.00</td>
+        </tr>
+        <tr>
+            <td>Student Association Fees</td>
+            <td>CA$438.00</td>
+            <td>CA$438.00</td>
+            <td>CA$0.00</td>
+        </tr>
+        <tr>
+            <td><strong>Total</strong></td>
+            <td><strong>CA$35,580.00</strong></td>
+            <td><strong>CA$25,000.00</strong></td>
+            <td><strong>CA$10,580.00</strong></td>
+        </tr>
+    </tbody>
+</table>
+
+<h3>Pay Tuition</h3>
+
+<!-- PayPal Button -->
+<div id="paypal-button-container"></div>
+
+<!-- Stripe Button -->
+<button id="stripeButton" style="margin-top: 10px;">Pay with Visa/MasterCard</button>
+
+<script>
+    const stripeButton = document.getElementById('stripeButton');
+
+    // Redirect to Stripe Checkout
+    stripeButton.addEventListener('click', function () {
+        window.location.href = "https://buy.stripe.com/4gw8xQ79ndAUaWIdQQ";
+    });
+</script>
+
+<script>
+    // PayPal Integration
+    paypal.Buttons({
+        createOrder: function (data, actions) {
+            return actions.order.create({
+                purchase_units: [{
+                    amount: {
+                        value: '10.58' // Replace with balance due
+                    }
+                }]
+            });
+        },
+        onApprove: function (data, actions) {
+            return actions.order.capture().then(function (details) {
+                alert('Transaction completed by ' + details.payer.name.given_name);
+            });
+        }
+    }).render('#paypal-button-container');
+
+    // Stripe Integration
+    const stripe = Stripe('YOUR_STRIPE_PUBLISHABLE_KEY');
+    const stripeButton = document.getElementById('stripeButton');
+
+    stripeButton.addEventListener('click', function () {
+        stripe.redirectToCheckout({
+            lineItems: [{ price: 'PRICE_ID', quantity: 1 }], // Replace 'PRICE_ID' with your Stripe price ID
+            mode: 'payment',
+            successUrl: 'https://yourdomain.com/success', // Replace with your success URL
+            cancelUrl: 'https://yourdomain.com/cancel'    // Replace with your cancel URL
+        }).then(function (result) {
+            if (result.error) {
+                alert(result.error.message);
+            }
+        });
+    });
+</script>

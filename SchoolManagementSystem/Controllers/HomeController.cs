@@ -21,6 +21,22 @@ namespace SchoolManagementSystem.Controllers
             return View();
         }
 
+        public IActionResult TuitionPayment()
+        {
+            return View();
+        }
+
+        public IActionResult TuitionBilling(string studentId, string lastName)
+        {
+            if (string.IsNullOrEmpty(studentId) || string.IsNullOrEmpty(lastName))
+            {
+                return RedirectToAction("TuitionPayment");
+            }
+
+            return View();
+        }
+
+
         public IActionResult About()
         {
             return View();

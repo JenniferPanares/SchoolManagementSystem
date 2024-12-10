@@ -16,7 +16,12 @@ public class StudentDashboardController : Controller
     // GET: Dashboard
     public IActionResult Index()
     {
-        var email = User.Identity.Name;
+        var email = User?.Identity?.Name;
+        if (email == null)
+        {
+            return Unauthorized("User is not authenticated.");
+        }
+
         var student = _context.Students
             .Include(s => s.Courses) // Ensure Courses are included
             .FirstOrDefault(s => s.Email == email);
@@ -33,18 +38,25 @@ public class StudentDashboardController : Controller
     [HttpPost]
     public IActionResult AddCourse(string courseName)
     {
-        var email = User.Identity.Name;
+        var email = User?.Identity?.Name;
+        if (email == null)
+        {
+            return Unauthorized("User is not authenticated.");
+        }
+
         var student = _context.Students.FirstOrDefault(s => s.Email == email);
 
         if (student != null && !string.IsNullOrEmpty(courseName))
         {
-            // Ensure the student has a Courses list
-            if (student.Courses == null)
+            // Create a new Course object
+            var newCourse = new Course
             {
-                student.Courses = new List<string>();
-            }
+                CourseTitle = courseName,
+                Description = "Default description", // Or get this dynamically
+                Credits = 3 // Default credits, modify as needed
+            };
 
-            student.Courses.Add(courseName);
+            student.Courses.Add(newCourse);
             _context.SaveChanges();
         }
 
@@ -54,7 +66,12 @@ public class StudentDashboardController : Controller
     // GET: Edit Profile
     public IActionResult Edit()
     {
-        var email = User.Identity.Name;
+        var email = User?.Identity?.Name;
+        if (email == null)
+        {
+            return Unauthorized("User is not authenticated.");
+        }
+
         var student = _context.Students.FirstOrDefault(s => s.Email == email);
 
         if (student == null)
