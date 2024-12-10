@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using SchoolManagementSystem.Data;
 using SchoolManagementSystem.Models;
+using System.Linq;
 
 public class StudentDashboardController : Controller
 {
@@ -16,7 +17,9 @@ public class StudentDashboardController : Controller
     public IActionResult Index()
     {
         var email = User.Identity.Name;
-        var student = _context.Students.FirstOrDefault(s => s.Email == email);
+        var student = _context.Students
+            .Include(s => s.Courses) // Ensure Courses are included
+            .FirstOrDefault(s => s.Email == email);
 
         if (student == null)
         {
@@ -27,32 +30,21 @@ public class StudentDashboardController : Controller
     }
 
     // POST: AddCourse
+    [HttpPost]
     public IActionResult AddCourse(string courseName)
     {
         var email = User.Identity.Name;
-        var student = _context.Students
-            .Include(s => s.Courses) // Load related Courses
-            .FirstOrDefault(s => s.Email == email);
+        var student = _context.Students.FirstOrDefault(s => s.Email == email);
 
         if (student != null && !string.IsNullOrEmpty(courseName))
         {
-            // Ensure the student has a Courses collection
+            // Ensure the student has a Courses list
             if (student.Courses == null)
             {
-                student.Courses = new List<Course>();
+                student.Courses = new List<string>();
             }
 
-            // Create a new Course object
-            var newCourse = new Course
-            {
-                CourseTitle = courseName, // Set the course name
-                StudentId = student.Id    // Associate the course with the student
-            };
-
-            // Add the Course object to the Courses collection
-            student.Courses.Add(newCourse);
-
-            // Save changes to the database
+            student.Courses.Add(courseName);
             _context.SaveChanges();
         }
 
