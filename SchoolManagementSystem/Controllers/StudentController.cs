@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using SchoolManagementSystem.Data;
 using SchoolManagementSystem.Models;
 using SchoolManagementSystem.ViewModels;
@@ -30,7 +31,7 @@ namespace SchoolManagementSystem.Controllers
         {
             if (ModelState.IsValid)
             {
-                var hashedPassword = HashPassword(model.Password);
+                var hashedPassword = HashPassword(model.Password); // Call the hashing method
 
                 var student = new Student
                 {
@@ -38,15 +39,28 @@ namespace SchoolManagementSystem.Controllers
                     LastName = model.LastName,
                     Email = model.Email,
                     PasswordHash = hashedPassword,
-                    DateOfBirth = DateTime.Now // Placeholder; add proper DOB input in the form
+                    DateOfBirth = model.DateOfBirth,
                 };
 
                 _context.Students.Add(student);
                 _context.SaveChanges();
-                return RedirectToAction("Login");
+                return RedirectToAction("Login"); // Redirect to login page after successful registration
             }
 
-            return View(model);
+            // Log validation errors for debugging (optional)
+            foreach (var error in ModelState.Values.SelectMany(v => v.Errors))
+            {
+                Console.WriteLine($"Validation Error: {error.ErrorMessage}");
+            }
+
+            return View(model); // Return the model back to the form if validation fails
+        }
+
+        // Helper method to hash passwords
+        private string HashPassword(string password)
+        {
+            var passwordHasher = new PasswordHasher<IdentityUser>();
+            return passwordHasher.HashPassword(null, password);
         }
 
         // GET: Login
@@ -74,14 +88,6 @@ namespace SchoolManagementSystem.Controllers
             }
 
             return View(model);
-        }
-
-
-        private string HashPassword(string password)
-        {
-            using var sha256 = SHA256.Create();
-            var bytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(password));
-            return Convert.ToBase64String(bytes);
         }
 
         private bool VerifyPassword(string password, string storedHash)
