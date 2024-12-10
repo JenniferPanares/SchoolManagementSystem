@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using SchoolManagementSystem.Data;
 using FluentValidation.AspNetCore;
 using SchoolManagementSystem.Services;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,6 +14,11 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
+
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
+           .ConfigureWarnings(warnings => warnings.Ignore(RelationalEventId.PendingModelChangesWarning)));
+
 
 builder.Services.AddDefaultIdentity<IdentityUser>(options =>
 {
@@ -27,6 +33,9 @@ builder.Services.AddDefaultIdentity<IdentityUser>(options =>
 // Register FluentValidation
 builder.Services.AddControllersWithViews()
     .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<StudentRegistrationValidator>());
+
+builder.Services.AddControllersWithViews()
+    .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<CourseValidator>());
 
 // Google Maps API Key Configuration
 var googleApiKey = builder.Configuration["APIKeys:GoogleMaps"];

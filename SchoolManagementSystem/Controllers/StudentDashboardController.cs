@@ -46,7 +46,7 @@ public class StudentDashboardController : Controller
             var newCourse = new Course
             {
                 CourseTitle = courseName, // Set the course name
-                StudentId = student.Id    // Associate the course with the student
+                StudentId = student.StudentId    // Associate the course with the student
             };
 
             // Add the Course object to the Courses collection
@@ -79,7 +79,7 @@ public class StudentDashboardController : Controller
     {
         if (ModelState.IsValid)
         {
-            var student = _context.Students.FirstOrDefault(s => s.Id == model.Id);
+            var student = _context.Students.FirstOrDefault(s => s.StudentId == model.StudentId);
             if (student != null)
             {
                 student.FirstName = model.FirstName;

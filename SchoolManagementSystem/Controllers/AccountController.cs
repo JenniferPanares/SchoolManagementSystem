@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using SchoolManagementSystem.ViewModels;
 using System.Threading.Tasks;
 
+
 public class AccountController : Controller
 {
     private readonly SignInManager<IdentityUser> _signInManager;

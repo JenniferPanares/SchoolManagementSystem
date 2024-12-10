@@ -17,6 +17,12 @@ namespace SchoolManagementSystem.Models
         public int Credits { get; set; } 
 
         public int StudentId { get; set; }
-        public Student Student { get; set; } 
+        public Student Student { get; set; }
+
+        public int? AdminId { get; set; }
+        public Admin Admin { get; set; }
+
+        // Navigation property 
+        public ICollection<Enrollment> Enrollments { get; set; } = new List<Enrollment>();
     }
 }

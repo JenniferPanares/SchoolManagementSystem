@@ -2,6 +2,7 @@
 using SchoolManagementSystem.Data;
 using SchoolManagementSystem.Models;
 
+
 public class CoursesController : Controller
 {
     private readonly ApplicationDbContext _context;
@@ -101,6 +102,30 @@ public class CoursesController : Controller
             _context.Courses.Remove(course);
             _context.SaveChanges();
         }
+        return RedirectToAction(nameof(Index));
+    }
+
+    // POST: Courses/Enroll
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public IActionResult Enroll(int courseId, int studentId)
+    {
+        var course = _context.Courses.FirstOrDefault(c => c.CourseId == courseId);
+        var student = _context.Students.FirstOrDefault(s => s.StudentId == studentId);
+
+        if (course == null || student == null)
+        {
+            return NotFound("Course or student not found.");
+        }
+
+        var enrollment = new Enrollment
+        {
+            CourseId = courseId,
+            StudentId = studentId
+        };
+
+        _context.Enrollments.Add(enrollment);
+        _context.SaveChanges();
         return RedirectToAction(nameof(Index));
     }
 }
