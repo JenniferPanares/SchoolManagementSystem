@@ -67,7 +67,7 @@ namespace SchoolManagementSystem.Controllers
                 if (student != null && VerifyPassword(model.Password, student.PasswordHash))
                 {
                     // Redirect to Student Dashboard after login
-                    return RedirectToAction("Dashboard", "Student", new { id = student.Id });
+                    return RedirectToAction("Dashboard", "Student", new { id = student.StudentId });
                 }
 
                 ModelState.AddModelError("", "Invalid email or password");
@@ -91,7 +91,7 @@ namespace SchoolManagementSystem.Controllers
 
         public IActionResult Dashboard(int id)
         {
-            var student = _context.Students.SingleOrDefault(s => s.Id == id);
+            var student = _context.Students.SingleOrDefault(s => s.StudentId == id);
 
             if (student == null)
             {

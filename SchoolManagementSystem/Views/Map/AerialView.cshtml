@@ -1,7 +1,7 @@
 ﻿@{
     ViewData["Title"] = "Location";
     var googleMapsApiKey = ViewData["GoogleMapsApiKey"]; // Pass the API key from the controller
-    Layout = "~/Views/Shared/_Layout.cshtml"; // Explicitly inherit the shared layout
+    Layout = "~/Views/Shared/_Layout.cshtml"; 
 }
 
 <div class="container">
@@ -48,8 +48,8 @@
         /**
          * Configuration
          */
-        const API_KEY = '@googleMapsApiKey'; // API key dynamically injected from the backend
-        const ADDRESS = '600 Montgomery St, San Francisco, CA 94111'; // Replace with the desired address
+        const API_KEY = '@googleMapsApiKey';
+        const ADDRESS = '100 College Boul, Red Deer AB T4N5H5';
         const API_URL = 'https://aerialview.googleapis.com/v1/videos:lookupVideo';
 
         async function initAerialView() {
